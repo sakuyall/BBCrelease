@@ -25,6 +25,8 @@ def toward(x, y, s):  # 添加坐标参数
     else:
         # 处于白格左转-1
         position = (position - 1) % 4
+        # 这里(0 - 1) % 4 = (-1) % 4 = 3, floor(-0.25) = -1
+        # 是由于Python中 a % b = a - b * floor(a / b)结果与b符号相同,其他语言不同
     return tow[position]                 # 返回转向后朝向
 
 def step(x, y, s):
