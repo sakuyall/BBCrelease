@@ -24,7 +24,7 @@ for i in range(n):
     # //这个方法要记住
     # 键id_i的新字典值为获取原字典值 (get函数没有默认为0)加1
     
-    while j < i and ts_i - log[j][0] >= d:     # 当前时间与左边界跨度超过d就执行排除
+    while j < i and ts_i - log[j][0] >= d:     # 当前时间与实时左边界跨度超过d就执行排除
         ts_j, id_j = log[j]                    # 获取即将移出窗口(左边界)的点赞记录
         id_count[id_j] -= 1                    # 将该帖子的点赞数减1
         if id_count[id_j] == 0:
@@ -38,3 +38,5 @@ for i in range(n):
 # 从小到大的顺序输出热帖id
 for post in sorted(result):
     print(post)
+
+# sorted()不会改变原列表,list.sort()方法会改变原列表
