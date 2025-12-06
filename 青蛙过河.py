@@ -62,7 +62,7 @@ def check(y, n, x, H):
             total = pref[n-1] - pref[i-1]
         if total < 2 * x:                      # 不满足检查条件
             return False
-    return True
+    return True        # 在上一步的y发生False后会退出并重新寻找y, 直到合适的y触发此True
 
 def main():
     n, x = map(int, input().split())     # 河的宽度, 上学的天数
