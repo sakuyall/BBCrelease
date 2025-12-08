@@ -48,3 +48,37 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# 想了不用库的方法, 可以这么写, 灵感来自字符串笔记
+def timediff(li):
+    # 接收列表类型是这样的['17:48:19 21:57:24']
+    table = li[0].split(" ")  # 把两时间分开, 若有(+1)则列表长度为3
+    sec2 = []                 # 储存起飞降落时间秒数
+    
+    for _ in range(2):
+        hms = table[_].split(":")   # 这里这么做是因为table第三个元素(+1)不能int
+        sec2.append(int(hms[0])*3600 + int(hms[1])*60 + int(hms[2]))  # 计算总秒数
+    time_diff = sec2[1] - sec2[0]   # 起飞降落的秒数差, 作为一个基础结果
+    
+    if len(table) == 2:             # 不跨天情况
+        return time_diff
+    else:
+        if "+1" in table[2]:
+            return time_diff + 24*3600  # 跨一天在基础结果上加24小时
+        elif "+2" in table[2]:
+            return time_diff + 48*3600  # 跨两天在基础结果上加48小时
+    # 没考虑如果跨更多天怎么写, 题中说最多飞24小时就这么办吧
+        
+def main():
+    T = int(input())
+    for _ in range(T):
+        rounds = []
+        for i in range(2):
+            b = input().splitlines()
+            rounds.append(timediff(b))           # 存储单程时间
+        answer = (rounds[0] + rounds[1]) // 2    # 航班飞行时间
+        print(f"{answer//3600 :02d}:{answer%3600 // 60 :02d}:{answer%60 :02d}")
+        # f字符串:02d表示宽度为2左边补0
+
+if __name__ == "__main__":
+    main()
