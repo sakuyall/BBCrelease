@@ -37,3 +37,8 @@ def gcd(a, b):
 
 a, b = map(int, input().split())
 print(gcd(a, b))
+
+# 此外lcm算法为
+def lcm(a, b):
+    """计算最小公倍数"""
+    return a * b // gcd(a, b)
