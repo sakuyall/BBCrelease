@@ -26,7 +26,43 @@
     最后可以像ds模板那样预设初值写法, 或者最后返回mid位置, 若都没有找到则返回None
     而开区间判断不包含mid位置, 所以下一次right开区间要取mid作为边界, 而左边界由于是闭区间要取mid+1
 
+如何判断左右?
+    二分查找的核心是：通过条件判断, 每次排除一半不可能包含答案的区间
 
+检查函数
+    def check(mid):
+        # 判断在为mid时，能否如何如何？
+        # 返回True表示mid可行，False表示不可行
+        return 是否
+
+    注意与单调性不发生关系, 只考虑是第一个还是最后一个满足条件
+    可以画出图像来判断是第几个T T T T T F F F F F
+
+找第一个满足条件的(最小值问题)，用左边界模板, 可行→左，不可行→右  F F F F F T T T T T 从右往左
+    left, right = 范围
+    ans = right  # 或者 right
+    while left <= right:
+        mid = (left + right) // 2
+        if check(mid):  # mid可行
+            ans = mid      # 记录可行解
+            right = mid - 1 # 尝试更小的值
+        else:            # mid不可行
+            left = mid + 1  # 尝试更大的值
+    print(ans)
+
+找最后一个满足条件的(最大值问题)，用右边界模板, 可行→右，不可行→左  T T T T T F F F F F 从左往右
+    left, right = 范围
+    ans = 0  # 或者 left
+    while left <= right:
+        mid = (left + right) // 2
+        if check(mid):  # mid可行
+            ans = mid      # 记录可行解
+            left = mid + 1 # 尝试更大的值
+        else:            # mid不可行
+            right = mid - 1 # 尝试更小的值
+    print(ans)
+
+-----------------------------------------
 # 建议 掌握一种模板记住即可
 P0_01有开区间与闭区间区别对比
 """
