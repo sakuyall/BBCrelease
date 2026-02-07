@@ -1,72 +1,48 @@
+"""2/6/26
+将本题理解后结合bisect重新传
+二分找出战力小于目标的个数, 接着减去其中有矛盾的个数
+"""
 import sys
+import bisect
 
-def binary_count_lower(sorted_values, target_value):
-    """返回严格小于target_value的元素个数"""
-    left, right = 0, len(sorted_values) - 1
+def conf_counts(n, lir, conf):
+    total = [[] for _ in range(n+1)]
+    # 在对应下标列表中储存矛盾对象
+    for x, y in conf:
+        total[x].append(y)
+        total[y].append(x)
     
-    while left <= right:
-        mid = (left + right) // 2
-        if sorted_values[mid] < target_value:
-            left = mid + 1    # 继续向右找
-        else:
-            right = mid - 1   # 向左找
-            
-    return left
-
-def conflict_lowers(conflicts, values, n):
-    """一次性预计算所有战士的低战斗力矛盾对手数量"""
-    # 构建邻接表
-    adj = [[] for _ in range(n + 1)]
-    for x, y in conflicts:
-        adj[x].append(y)
-        adj[y].append(x)
+    count_list = []
+    for i in range(1, n+1):
+        counts = 0
+        for j in total[i]:
+            # 依次比对目标下标 与 其矛盾对象下标 的战力大小
+            if lir[i] > lir[j]:
+                counts += 1
+        count_list.append(counts)
+        
+    return count_list
     
-    # 计算结果
-    conflict_lowers_list = [0] * (n + 1)  # 换个变量名避免冲突
-    for i in range(1, n + 1):
-        count = 0
-        for neighbor in adj[i]:
-            if values[neighbor] < values[i]:
-                count += 1
-        conflict_lowers_list[i] = count
-    
-    return conflict_lowers_list
+n, k = map(int, input().split())       # n k
+lir = list(map(int, input().split()))  # 战力列表r
+lir.insert(0, 0)                       # 开头放个0调整序号
+conf = []                              # 矛盾列表
 
-# 数据处理
-data = sys.stdin.read().strip().split()
-it = iter(data)
-n = int(next(it))
-k = int(next(it))
-
-# 读取战斗力, 战士编号从1开始, 列表长度设为n+1, 索引0不使用
-values = [0] * (n + 1)
-for i in range(1, n + 1):
-    values[i] = int(next(it))
-
-# 读取矛盾关系
-conflicts = []
 for _ in range(k):
-    x = int(next(it))
-    y = int(next(it))
-    conflicts.append((x, y))
+    conf.append(tuple(map(int, input().split())))
+lis = sorted(lir[1:])                  # 战力列表排序
 
-# 对原列表排序, 不包括索引0位置
-sorted_values = sorted(values[1:])
+# 获取矛盾数列表
+count_list = conf_counts(n, lir, conf)
 
-# 预处理：一次性计算所有战士的低战斗力矛盾对手数量
-conflict_lower_counts = conflict_lowers(conflicts, values, n)
+# 获取二分结果列表
+flag = 0
+result_list = []
+for target in lir[1:]:                      # target表示原战力列表元素
+    bs = bisect.bisect_left(lis, target)    # 当前角色战力大于几个
+    res = bs - count_list[flag]             # 结果为二分结果减去其中小于它的矛盾数
+    result_list.append(res)
+    flag += 1                               # 用flag标识, 不要与target弄混
 
-results = []
-for target in range(1, n + 1):
-    target_value = values[target]
-
-    # 比它power小的个数
-    count_lower_res = binary_count_lower(sorted_values, target_value)
-
-    # 直接使用预处理结果，O(1)时间获取
-    conflicts_lower_res = conflict_lower_counts[target]
-    
-    result = count_lower_res - conflicts_lower_res
-    results.append(str(result))
-    
-print(" ".join(results))
+# 解包输出
+print(*result_list)
