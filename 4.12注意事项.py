@@ -172,8 +172,9 @@ arr = [1, 3, 5, 5, 7, 9]
 print(bisect.bisect_left(arr, 5))   # 2
 print(bisect.bisect_right(arr, 5))  # 4
 
-left：返回第一个等于 x 的索引（如果存在）
-right：返回最后一个等于 x 的索引 + 1
+注意是0-based
+left：返回第一个大于等于 x 的索引（如果存在）
+right：返回最后一个大于 x 的索引 + 1
 
 # 将降序转为升序（取负数）
 arr = [9, 7, 5, 3, 1]
